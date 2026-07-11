@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "@koa/router": "^15.6.0",
+    "@standard-schema/spec": "^1.1.0",
+    "koa": "^3.2.1",
+    "koa-body": "^8.0.0",
+    "tsx": "^4.23.0",
+    "valibot": "^1.4.2"
+  },
+  "devDependencies": {
+    "@types/koa": "^3.0.3",
+    "eslint": "^10.6.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true
+  }
+}
