@@ -9,24 +9,29 @@ import {
 	status,
 } from "./controller";
 
-export type Composed<T, U> = (
-	input: T,
-	bindings?: U,
+export type Composed<TInput, TBindings> = (
+	input: TInput,
+	bindings?: TBindings,
 ) => Promise<Status<any, any>>;
 
 export class Compose<TIn, TBindings, TInitialInput = TIn, TCtx = {}> {
 	constructor(
 		protected readonly bindings?: TBindings,
 		protected readonly middlewares: Middleware<any, any>[] = [],
-	) {}
+	) { }
 
-	modify<TOut = TIn, TCtxOut = TCtx>(
+	/** adds a middleware to the chain */
+	before<TOut = TIn, TCtxOut = TCtx>(
 		m: Middleware<TIn, TBindings, TCtx, TCtxOut, TOut>,
 	): Compose<TOut, TBindings, TInitialInput, TCtxOut> {
 		return new Compose(this.bindings, [...(this.middlewares as any), m]);
 	}
 
-	handle<TMap extends ResponseMap>(
+	/**
+	 * returns a function that calls all the registered middlewares in order
+	 * until calling the actual controller.
+	 */
+	end<TMap extends ResponseMap>(
 		c: Controller<TIn, TMap, TCtx, TBindings>,
 	): Composed<TInitialInput, TBindings> {
 		return async (input, bindings) => {
@@ -52,23 +57,10 @@ export class Compose<TIn, TBindings, TInitialInput = TIn, TCtx = {}> {
 
 			return await c(currentInput as TIn, currentContext as TCtx, {
 				...(binds as any),
-				// bind these to the global function
+				// bind these to the global ones
 				status,
 				redirect,
 			});
 		};
 	}
-
-	// static createWithBindings<In, Bindings>(bindings?: Bindings) {
-	// 	return new Compose<In, Bindings>(bindings);
-	// }
-
-	// static createWithoutBindings<In>() {
-	// 	return new Compose<In, {}>({});
-	// }
-
-	// static create<In>(): <Bindings>(b: Bindings) => Compose<In, Bindings> {
-	// 	return <Bindings>(bindings: Bindings) =>
-	// 		Compose.createWithBindings<In, Bindings>(bindings);
-	// }
 }

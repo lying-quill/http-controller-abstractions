@@ -44,6 +44,7 @@ type ControllerBindings<T, TMap extends ResponseMap> = Readonly<
 	}
 >;
 
+/** an abstract controller definition focused on ??? */
 export type Controller<TInput, TMap extends ResponseMap, TCtx, TBindings> = (
 	input: Readonly<TInput>,
 	context: Readonly<TCtx>,
@@ -64,7 +65,7 @@ export class Status<TStatus extends HttpStatus, TBody = unknown> {
 			cookies?: Record<string, string>;
 			redirect?: string;
 		},
-	) {}
+	) { }
 }
 
 export type RedirectStatus<TStatus extends HttpRedirectStatus> = Status<

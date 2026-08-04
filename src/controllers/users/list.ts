@@ -2,7 +2,7 @@ import * as v from "valibot";
 import type * as App from "../../app/bindings";
 import type { Controller } from "../../lib/controller";
 
-type ListUsersResponses = {
+type Responses = {
 	200: { users: string[] };
 	204: { error: "NoUsers" };
 	403: { error: "Unauthorized" };
@@ -17,15 +17,11 @@ export const inputSchema = v.optional(
 
 export const listUsers: Controller<
 	v.InferOutput<typeof inputSchema>,
-	ListUsersResponses,
+	Responses,
 	App.AuthMiddlewareContext,
 	App.ServiceBindings
-> = (input, ctx, { status, redirect }) => {
+> = (input, ctx, { status }) => {
 	console.log(input);
-
-	// if (Math.random()) {
-	// 	return redirect(302, "ggogel.com");
-	// }
 
 	return status(200, {
 		users: [String(ctx.user)],

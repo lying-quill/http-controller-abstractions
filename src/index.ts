@@ -16,9 +16,9 @@ router.get(
 	"/users",
 	wrap(
 		new Compose<Koa.Context, App.ServiceBindings>()
-			.modify(koaJwtMiddleware)
-			.modify(createBodyMiddleware(listUsersInputSchema))
-			.handle(listUsers),
+			.before(koaJwtMiddleware)
+			.before(createBodyMiddleware(listUsersInputSchema))
+			.end(listUsers),
 		// this provides the service bindings
 		() => ({
 			db: {
