@@ -7,27 +7,32 @@ import type { Composed } from "./compose";
 import type { MaybePromise, Middleware } from "./controller";
 
 /** provides a koa middleware from the provided composed handler */
-export function wrap<TBindings>(
+export function fromComposed<TBindings>(
 	composed: Composed<Koa.Context, TBindings>,
-	bindings?: () => MaybePromise<TBindings>,
-) /*: (ctx: NormalizedKoaContext, next: Koa.Next) => Promise<void> */ {
+	bindings: () => MaybePromise<TBindings>,
+) {
 	return async (ctx: Koa.Context, next: Koa.Next) => {
 		const binds = await bindings?.();
-		const status = await composed(ctx, binds);
+		const result = await composed(ctx, binds);
 
-		ctx.status = status.status;
+		// http status
+		ctx.status = result.status;
 
-		if (status.options.redirect) {
-			ctx.redirect(status.options.redirect);
+		if (result.options.redirect) {
+			ctx.redirect(result.options.redirect);
 		} else {
-			ctx.body = status.body;
+			ctx.body = result.body;
 		}
 
-		// FIXME:
-		// ctx.cookies.set
+		// FIXME: this is a bad idea:
+		// if (result.options.cookies) {
+		// 	for (const cookieName in result.options.cookies) {
+		// 		ctx.cookies.set(cookieName, result.options.cookies[cookieName]);
+		// 	}
+		// }
 
-		if (status.options.headers) {
-			ctx.set(status.options.headers);
+		if (result.options.headers) {
+			ctx.set(result.options.headers);
 		}
 
 		await next();

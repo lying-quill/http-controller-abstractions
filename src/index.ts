@@ -7,15 +7,15 @@ import {
 	inputSchema as listUsersInputSchema,
 } from "./controllers/users/list";
 import { Compose } from "./lib/compose";
-import { createBodyMiddleware, wrap } from "./lib/koa-adapter";
+import { createBodyMiddleware, fromComposed } from "./lib/koa-adapter";
 import { koaJwtMiddleware } from "./middlewares/koa-jwt";
 
 const router = new Router();
 
 router.get(
 	"/users",
-	wrap(
-		new Compose<Koa.Context, App.ServiceBindings>()
+	fromComposed(
+		Compose.new<Koa.Context, App.ServiceBindings>()
 			.before(koaJwtMiddleware)
 			.before(createBodyMiddleware(listUsersInputSchema))
 			.end(listUsers),

@@ -62,7 +62,8 @@ export class Status<TStatus extends HttpStatus, TBody = unknown> {
 		public readonly body: TBody,
 		public readonly options: {
 			headers?: Record<string, string>;
-			cookies?: Record<string, string>;
+			// FIXME: probably pick a better type
+			// cookies?: Record<string, string>;
 			redirect?: string;
 		},
 	) { }
