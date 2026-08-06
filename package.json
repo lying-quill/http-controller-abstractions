@@ -1,17 +1,22 @@
 {
-  "dependencies": {
-    "@koa/router": "^15.6.0",
-    "@standard-schema/spec": "^1.1.0",
-    "koa": "^3.2.1",
-    "koa-body": "^8.0.0",
-    "tsx": "^4.23.0",
-    "valibot": "^1.4.2"
-  },
-  "devDependencies": {
-    "@types/koa": "^3.0.3",
-    "eslint": "^10.6.0"
-  },
-  "allowScripts": {
-    "esbuild@0.28.1": true
-  }
+	"name": "http-controller-abstractions",
+	"version": "0.1.0",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"files": [
+		"dist",
+		"package.json"
+	],
+	"scripts": {
+		"lint": "biome lint .",
+		"format": "biome format . --write",
+		"build": "tsc -p tsconfig.json",
+		"build:watch": "tsc -p tsconfig.json --watch",
+		"build:clean": "rm -rf dist"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.5.7",
+		"typescript": "^7.0.2"
+	}
 }

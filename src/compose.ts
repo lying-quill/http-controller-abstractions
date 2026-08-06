@@ -1,13 +1,9 @@
-/** biome-ignore-all lint/complexity/noBannedTypes: ><> */
 /** biome-ignore-all lint/suspicious/noExplicitAny: ><> */
-import {
-	type Controller,
-	type Middleware,
-	type ResponseMap,
-	redirect,
-	type Status,
-	status,
-} from "./controller";
+/** biome-ignore-all lint/complexity/noBannedTypes: ><> */
+import type { ResponseMap } from "./common";
+import type { Controller } from "./controller";
+import type { Middleware } from "./middleware";
+import { redirect, type Status, status } from "./status";
 
 export type Composed<TInput, TBindings> = (
 	input: TInput,
@@ -17,7 +13,7 @@ export type Composed<TInput, TBindings> = (
 export class Compose<TIn, TBindings, TInitialInput = TIn, TCtx = {}> {
 	private constructor(
 		protected readonly middlewares: Middleware<any, any>[] = [],
-	) { }
+	) {}
 
 	public static new<TIn, TBindings>() {
 		return new Compose<TIn, TBindings>();
