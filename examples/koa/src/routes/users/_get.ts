@@ -8,6 +8,7 @@ import listUsers, {
 import { createBodyMiddleware } from "~/lib/create-body-middleware";
 import { fromComposed } from "~/lib/from-composed";
 import { loadServices } from "~/lib/load-services";
+import { dummyMiddleware } from "~/middlewares/dummy-middleware";
 import { jwtMiddleware } from "~/middlewares/jwt";
 
 const router = new Router();
@@ -16,7 +17,8 @@ router.get(
 	"/",
 	fromComposed(
 		Compose.new<Koa.Context, ServiceBindings>()
-			.before(jwtMiddleware)
+			.before(jwtMiddleware())
+			.before(dummyMiddleware())
 			.before(createBodyMiddleware(listUsersInputSchema))
 			.end(listUsers),
 		// allows lazy-loading the service bindings.

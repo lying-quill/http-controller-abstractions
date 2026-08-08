@@ -1,4 +1,4 @@
-import type { HttpRedirectStatus, HttpStatus, ResponseMap } from "./common";
+import type { HttpStatus, ResponseMap } from "./common";
 
 export interface StatusOptions {
 	headers?: Record<string, string>;
@@ -7,7 +7,6 @@ export interface StatusOptions {
 	redirect?: string;
 }
 
-// TODO: perhaps the name does not make sense?
 export class Status<
 	TStatus extends HttpStatus,
 	TBody = unknown,
@@ -20,23 +19,22 @@ export class Status<
 	) {}
 }
 
-export type RedirectStatus<
-	TStatus extends HttpRedirectStatus,
-	TOptions extends StatusOptions = StatusOptions,
-> = Status<TStatus, undefined, TOptions & Required<Pick<TOptions, "redirect">>>;
+export function bind<const TMap extends ResponseMap>() {
+	return {
+		status,
+	} as {
+		status<TStatus extends keyof TMap>(
+			status: TStatus,
+			body: TMap[TStatus],
+		): TStatus extends HttpStatus // 'keyof TMap' also includes 'symbol | string'
+			? Status<TStatus, TMap[TStatus]>
+			: never;
+	};
+}
 
 export function status<
 	const TMap extends ResponseMap,
 	const TStatus extends keyof TMap & HttpStatus,
 >(status: TStatus, body: TMap[TStatus]): Status<TStatus, TMap[TStatus]> {
 	return new Status(status, body, {});
-}
-
-export function redirect<const TStatus extends HttpRedirectStatus>(
-	status: TStatus,
-	dest: string,
-): RedirectStatus<TStatus> {
-	return new Status(status, undefined, {
-		redirect: dest,
-	});
 }

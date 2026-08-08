@@ -1,20 +1,20 @@
 import type { Middleware } from "http-controller-abstractions";
 import type Koa from "koa";
-import type { AuthContext, ServiceBindings } from "~/bindings";
+import type { DummyContext, ServiceBindings } from "~/bindings";
 
-export const jwtMiddleware =
+export const dummyMiddleware =
 	<T>(): Middleware<
 		Koa.Context,
 		ServiceBindings,
 		T,
-		Omit<T, keyof AuthContext> & AuthContext
+		Omit<T, keyof DummyContext> & DummyContext
 	> =>
 	(input, context) => {
 		return {
 			input,
 			context: {
 				...context,
-				user: null,
+				meow: true,
 			},
 		};
 	};

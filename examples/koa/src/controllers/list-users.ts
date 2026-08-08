@@ -1,4 +1,4 @@
-import type { Controller } from "http-controller-abstractions";
+import { bind, type Controller } from "http-controller-abstractions";
 import * as v from "valibot";
 import type { AuthContext, ServiceBindings } from "~/bindings";
 
@@ -8,6 +8,8 @@ type StatusMap = {
 	403: { error: "Unauthorized" };
 	302: undefined;
 };
+
+const { status } = bind<StatusMap>();
 
 export const inputSchema = v.optional(
 	v.object({
@@ -20,7 +22,7 @@ const controller: Controller<
 	StatusMap,
 	AuthContext,
 	ServiceBindings
-> = (input, ctx, { status }) => {
+> = (input, ctx, svc) => {
 	console.log(input);
 
 	return status(200, {

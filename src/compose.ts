@@ -3,7 +3,7 @@
 import type { ResponseMap } from "./common";
 import type { Controller } from "./controller";
 import type { Middleware } from "./middleware";
-import { redirect, type Status, status } from "./status";
+import type { Status } from "./status";
 
 export type Composed<TInput, TBindings> = (
 	input: TInput,
@@ -33,13 +33,11 @@ export class Compose<TIn, TBindings, TInitialInput = TIn, TCtx = {}> {
 	public end<TMap extends ResponseMap>(
 		c: Controller<TIn, TMap, TCtx, TBindings>,
 	): Composed<TInitialInput, TBindings> {
-		const middlewaresCopy = [...this.middlewares];
-
 		return async (input, bindings) => {
 			let currentInput: any = input;
 			let currentContext: any = {};
 
-			for (const middleware of middlewaresCopy) {
+			for (const middleware of this.middlewares) {
 				const result = await middleware(
 					currentInput,
 					currentContext,
@@ -50,12 +48,11 @@ export class Compose<TIn, TBindings, TInitialInput = TIn, TCtx = {}> {
 				currentContext = result.context;
 			}
 
-			return await c(currentInput as TIn, currentContext as TCtx, {
-				...(bindings as any),
-				// bind these to the global ones
-				status,
-				redirect,
-			});
+			return await c(
+				currentInput as TIn,
+				currentContext as TCtx,
+				bindings as TBindings,
+			);
 		};
 	}
 }
