@@ -45,6 +45,11 @@ export class Compose<TIn, TBindings, TInitialInput = TIn, TCtx = {}> {
 			for (const m of this.middlewares) {
 				const result = await m(inp, ctx, bindings);
 
+				if (result.error) {
+					// return early if the middleware needs to
+					return result.error;
+				}
+
 				inp = result.input;
 
 				// merge the contexts

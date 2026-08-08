@@ -5,15 +5,13 @@ import type { AuthContext, ServiceBindings } from "~/bindings";
 type StatusMap = {
 	200: { users: string[] };
 	204: { error: "NoUsers" };
-	403: { error: "Unauthorized" };
-	302: undefined;
 };
 
 const { status } = bind<StatusMap>();
 
-export const inputSchema = v.optional(
-	v.object({
-		page: v.union([
+const inputSchema = v.object({
+	page: v.optional(
+		v.union([
 			v.number(),
 			v.pipe(
 				// allows parsing GET queries
@@ -22,8 +20,8 @@ export const inputSchema = v.optional(
 				v.transform((i) => Number.parseInt(i, 10)),
 			),
 		]),
-	}),
-);
+	),
+});
 
 const controller: Controller<
 	v.InferOutput<typeof inputSchema>,
@@ -33,15 +31,11 @@ const controller: Controller<
 > = (input, ctx, _svc) => {
 	console.log(input, ctx);
 
-	if (Math.random() > 0.5) {
-		return status(302, undefined, {
-			redirect: "https://google.com",
-		});
-	}
-
 	return status(200, {
 		users: [String(ctx.user)],
 	});
 };
+
+export { inputSchema };
 
 export default controller;
