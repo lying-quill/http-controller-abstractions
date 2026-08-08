@@ -1,5 +1,5 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: ><> */
-import type { Composed, RedirectStatus } from "http-controller-abstractions";
+import type { Composed } from "http-controller-abstractions";
 import type Koa from "koa";
 
 // TODO: this should become part of the library?
@@ -17,17 +17,18 @@ export function fromComposed<TBindings>(
 		ctx.status = result.status;
 
 		if (result.options.redirect) {
-			ctx.redirect((result as RedirectStatus<any>).options.redirect);
+			ctx.redirect(result.options.redirect);
 		} else {
 			ctx.body = result.body;
 		}
 
-		// FIXME: this is a bad idea:
-		// if (result.options.cookies) {
-		// 	for (const cookieName in result.options.cookies) {
-		// 		ctx.cookies.set(cookieName, result.options.cookies[cookieName]);
-		// 	}
-		// }
+		if (result.options.cookies) {
+			for (const cookieName in result.options.cookies) {
+				// biome-ignore lint/style/noNonNullAssertion: ><>
+				const c = result.options.cookies[cookieName]!;
+				ctx.cookies.set(cookieName, c.value, c);
+			}
+		}
 
 		if (result.options.headers) {
 			ctx.set(result.options.headers);

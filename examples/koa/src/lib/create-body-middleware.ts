@@ -25,7 +25,9 @@ export function createBodyMiddleware<TIn, TOut, TBindings, TCtxIn>(
 > {
 	return async (input, context) => {
 		const validated = await schema["~standard"].validate(
-			input.request.body,
+			["POST", "PUT", "PATCH"].includes(input.method)
+				? input.request.body
+				: input.request.query,
 		);
 
 		if ("issues" in validated && validated.issues)

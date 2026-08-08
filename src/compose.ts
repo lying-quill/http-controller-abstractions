@@ -12,7 +12,7 @@ export type Composed<TInput, TBindings> = (
 
 export class Compose<TIn, TBindings, TInitialInput = TIn, TCtx = {}> {
 	private constructor(
-		protected readonly middlewares: Middleware<any, any>[] = [],
+		protected readonly middlewares: Middleware<TIn, TBindings>[] = [],
 	) {}
 
 	public static new<TIn, TBindings>() {
@@ -20,9 +20,14 @@ export class Compose<TIn, TBindings, TInitialInput = TIn, TCtx = {}> {
 	}
 
 	/** adds a middleware to the chain */
-	public before<TOut = TIn, TCtxOut = TCtx>(
+	public before<TOut = TIn, TCtxOut = {}>(
 		m: Middleware<TIn, TBindings, TCtx, TCtxOut, TOut>,
-	): Compose<TOut, TBindings, TInitialInput, TCtxOut> {
+	): Compose<
+		TOut,
+		TBindings,
+		TInitialInput,
+		TCtxOut & Omit<TCtx, keyof TCtxOut>
+	> {
 		return new Compose([...(this.middlewares as any), m]);
 	}
 
@@ -34,25 +39,22 @@ export class Compose<TIn, TBindings, TInitialInput = TIn, TCtx = {}> {
 		c: Controller<TIn, TMap, TCtx, TBindings>,
 	): Composed<TInitialInput, TBindings> {
 		return async (input, bindings) => {
-			let currentInput: any = input;
-			let currentContext: any = {};
+			let inp: any = input;
+			let ctx: any = {};
 
-			for (const middleware of this.middlewares) {
-				const result = await middleware(
-					currentInput,
-					currentContext,
-					bindings as any,
-				);
+			for (const m of this.middlewares) {
+				const result = await m(inp, ctx, bindings);
 
-				currentInput = result.input;
-				currentContext = result.context;
+				inp = result.input;
+
+				// merge the contexts
+				ctx = {
+					...ctx,
+					...result.context,
+				};
 			}
 
-			return await c(
-				currentInput as TIn,
-				currentContext as TCtx,
-				bindings as TBindings,
-			);
+			return await c(inp as TIn, ctx as TCtx, bindings);
 		};
 	}
 }
