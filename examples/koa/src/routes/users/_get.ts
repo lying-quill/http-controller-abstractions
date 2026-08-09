@@ -24,7 +24,7 @@ router.get(
 			.with(createBodyMiddleware(listUsersInputSchema))
 			.with(listUsers)
 			.with((input) => {
-				// this is middleware that can transform the controller's response
+				// this middleware can transform the controller's response.
 				console.debug(input);
 				return input;
 			})
