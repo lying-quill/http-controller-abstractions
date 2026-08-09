@@ -91,18 +91,14 @@ export class Status<
 	) {}
 }
 
-export function bind<const TMap extends StatusMap>() {
-	return {
-		status,
-	} as {
-		status<TStatus extends keyof TMap>(
-			status: TStatus,
-			body: TMap[TStatus],
-			options?: StatusOptions,
-		): TStatus extends HttpStatus // 'keyof TMap' also includes 'symbol | string'
-			? Status<TStatus, TMap[TStatus]>
-			: never;
-	};
+export function bindStatus<const TMap extends StatusMap>() {
+	return status as <TStatus extends keyof TMap>(
+		status: TStatus,
+		body: TMap[TStatus],
+		options?: StatusOptions,
+	) => TStatus extends HttpStatus // 'keyof TMap' also includes 'symbol | string'
+		? Status<TStatus, TMap[TStatus]>
+		: never;
 }
 
 export function status<

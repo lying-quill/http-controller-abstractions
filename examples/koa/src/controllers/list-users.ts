@@ -1,4 +1,4 @@
-import { bind, type Controller } from "http-controller-abstractions";
+import { bindStatus, type Controller } from "http-controller-abstractions";
 import * as v from "valibot";
 import type { AuthContext, ServiceBindings } from "~/bindings";
 
@@ -7,7 +7,7 @@ type StatusMap = {
 	204: undefined;
 };
 
-const { status } = bind<StatusMap>();
+const status = bindStatus<StatusMap>();
 
 const inputSchema = v.object({
 	page: v.optional(
