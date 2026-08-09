@@ -20,7 +20,7 @@ export type Middleware<
 	bindings: Readonly<TBindings>,
 ) => MaybePromise<TOut | TransformRecord<TOut, TCtxOut>>;
 
-const transformKey: unique symbol = Symbol("token");
+const transformKey: unique symbol = Symbol("transformRecordSym");
 
 export function createTransformRecord<TOut, TCtx extends {}>(
 	out: TOut,
