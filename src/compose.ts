@@ -10,18 +10,17 @@ export type Composed<TIn, TOut, TBindings = {}> = (
 
 export class Compose<
 	TNextIn,
-	TBindings extends {} = {},
-	TCtx extends {} = {},
-	TInitialInput = TNextIn,
-	// TODO: figure out why defaulting it to "never" was not working
-	TCurrentOut = false,
+	TBindings extends {},
+	TCtx extends {},
+	TInitialInput,
+	TCurrentOut,
 > {
 	private constructor(
 		protected readonly middlewares: Middleware<any, TCtx, TBindings>[] = [],
 	) {}
 
 	public static new<T, U extends {}>() {
-		return new Compose<T, U, {}>();
+		return new Compose<T, U, {}, T, undefined>();
 	}
 
 	public with<T, U extends {}>(
@@ -44,11 +43,7 @@ export class Compose<
 				const next = await m(inp, ctx, bindings as any);
 				if (isTransformRecord(next)) {
 					inp = next.out;
-					// merge the contexts
-					ctx = {
-						...ctx,
-						...next.ctx,
-					};
+					ctx = { ...ctx, ...next.ctx };
 				} else {
 					inp = next;
 				}

@@ -2,8 +2,6 @@
 import type { Composed, Status } from "http-controller-abstractions";
 import type Koa from "koa";
 
-// TODO: this should become part of the library?
-
 /** provides a koa middleware from the provided composed handler */
 export function fromComposed<T, U extends Status>(
 	composed: Composed<Koa.Context, U, T>,

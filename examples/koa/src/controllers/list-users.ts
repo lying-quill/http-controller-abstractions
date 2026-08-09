@@ -27,7 +27,8 @@ const controller: Controller<
 	v.InferOutput<typeof inputSchema>,
 	StatusMap,
 	AuthContext,
-	ServiceBindings
+	// pick the services you actually use here so testing is easier
+	Pick<ServiceBindings, "db">
 > = (input, ctx, svc) => {
 	console.log(input, ctx, svc);
 

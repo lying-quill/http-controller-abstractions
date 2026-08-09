@@ -7,8 +7,6 @@ import {
 } from "http-controller-abstractions";
 import type Koa from "koa";
 
-// TODO: this should become part of the library?
-
 export class ValidationError extends Error {
 	public readonly name: string = "ValidationError";
 
