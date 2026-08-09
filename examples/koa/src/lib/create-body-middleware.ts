@@ -4,7 +4,6 @@ import type { StandardSchemaV1 } from "@standard-schema/spec";
 import {
 	createTransformRecord,
 	type Middleware,
-	Status,
 } from "http-controller-abstractions";
 import type Koa from "koa";
 
