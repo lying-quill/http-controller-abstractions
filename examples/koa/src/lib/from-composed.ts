@@ -1,13 +1,13 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: ><> */
-import type { Composed } from "http-controller-abstractions";
+import type { Composed, Status } from "http-controller-abstractions";
 import type Koa from "koa";
 
 // TODO: this should become part of the library?
 
 /** provides a koa middleware from the provided composed handler */
-export function fromComposed<TBindings>(
-	composed: Composed<Koa.Context, TBindings>,
-	bindings: () => TBindings | Promise<TBindings>,
+export function fromComposed<T, U extends Status>(
+	composed: Composed<Koa.Context, U, T>,
+	bindings: () => T | Promise<T>,
 ) {
 	return async (ctx: Koa.Context, next: Koa.Next) => {
 		const binds = await bindings?.();

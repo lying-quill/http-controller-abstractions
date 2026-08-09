@@ -1,65 +1,61 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: ><> */
 /** biome-ignore-all lint/complexity/noBannedTypes: ><> */
-import type { ResponseMap } from "./common";
-import type { Controller } from "./controller";
-import type { Middleware } from "./middleware";
-import type { Status } from "./status";
 
-export type Composed<TInput, TBindings> = (
-	input: TInput,
+import { isTransformRecord, type Middleware } from "./middleware";
+
+export type Composed<TIn, TOut, TBindings = {}> = (
+	input: TIn,
 	bindings: TBindings,
-) => Promise<Status<any, any>>;
+) => Promise<TOut>;
 
-export class Compose<TIn, TBindings, TInitialInput = TIn, TCtx = {}> {
+export class Compose<
+	TNextIn,
+	TBindings extends {} = {},
+	TCtx extends {} = {},
+	TInitialInput = TNextIn,
+	// TODO: figure out why defaulting it to "never" was not working
+	TCurrentOut = false,
+> {
 	private constructor(
-		protected readonly middlewares: Middleware<TIn, TBindings>[] = [],
+		protected readonly middlewares: Middleware<any, TCtx, TBindings>[] = [],
 	) {}
 
-	public static new<TIn, TBindings>() {
-		return new Compose<TIn, TBindings>();
+	public static new<T, U extends {}>() {
+		return new Compose<T, U, {}>();
 	}
 
-	/** adds a middleware to the chain */
-	public before<TOut = TIn, TCtxOut = {}>(
-		m: Middleware<TIn, TBindings, TCtx, TCtxOut, TOut>,
-	): Compose<
-		TOut,
-		TBindings,
-		TInitialInput,
-		TCtxOut & Omit<TCtx, keyof TCtxOut>
-	> {
+	public with<T, U extends {}>(
+		m: Middleware<TNextIn, TCtx, TBindings, U, T>,
+	): Compose<T, TBindings, U & Omit<TCtx, keyof U>, TInitialInput, T> {
 		return new Compose([...(this.middlewares as any), m]);
 	}
 
-	/**
-	 * returns a function that calls all the registered middlewares in order
-	 * until calling the actual controller.
-	 */
-	public end<TMap extends ResponseMap>(
-		c: Controller<TIn, TMap, TCtx, TBindings>,
-	): Composed<TInitialInput, TBindings> {
+	public end(): Composed<TInitialInput, TCurrentOut, TBindings> {
+		if (!this.middlewares.length)
+			throw new Error("Cannot compose an empty chain of middlewares");
+
 		return async (input, bindings) => {
 			let inp: any = input;
 			let ctx: any = {};
 
 			for (const m of this.middlewares) {
-				const result = await m(inp, ctx, bindings);
-
-				if (result.error) {
-					// return early if the middleware needs to
-					return result.error;
+				// TODO: implement error handling
+				// try {
+				const next = await m(inp, ctx, bindings as any);
+				if (isTransformRecord(next)) {
+					inp = next.out;
+					// merge the contexts
+					ctx = {
+						...ctx,
+						...next.ctx,
+					};
+				} else {
+					inp = next;
 				}
-
-				inp = result.input;
-
-				// merge the contexts
-				ctx = {
-					...ctx,
-					...result.context,
-				};
+				// } catch (e) {}
 			}
 
-			return await c(inp as TIn, ctx as TCtx, bindings);
+			return inp;
 		};
 	}
 }

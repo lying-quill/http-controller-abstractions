@@ -17,16 +17,18 @@ router.get(
 	"/",
 	fromComposed(
 		Compose.new<Koa.Context, ServiceBindings>()
-			.before(dummyMiddleware)
+			.with(dummyMiddleware)
 			// the order matters here because "jwtMiddleware" depends on
 			// the "dummyMiddleware"
-			.before(jwtMiddleware)
-			.before(createBodyMiddleware(listUsersInputSchema))
-			.before((input, context) => {
-				console.debug(context);
-				return { input, context };
+			.with(jwtMiddleware)
+			.with(createBodyMiddleware(listUsersInputSchema))
+			.with(listUsers)
+			.with((input) => {
+				// this is middleware that can transform the controller's response
+				console.debug(input);
+				return input;
 			})
-			.end(listUsers),
+			.end(),
 		// allows lazy-loading the service bindings.
 		loadServices,
 	),

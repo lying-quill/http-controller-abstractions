@@ -4,7 +4,7 @@ import type { AuthContext, ServiceBindings } from "~/bindings";
 
 type StatusMap = {
 	200: { users: string[] };
-	204: { error: "NoUsers" };
+	204: undefined;
 };
 
 const { status } = bind<StatusMap>();
@@ -28,8 +28,12 @@ const controller: Controller<
 	StatusMap,
 	AuthContext,
 	ServiceBindings
-> = (input, ctx, _svc) => {
-	console.log(input, ctx);
+> = (input, ctx, svc) => {
+	console.log(input, ctx, svc);
+
+	if (Math.random() > 0.5) {
+		return status(204, undefined);
+	}
 
 	return status(200, {
 		users: [String(ctx.user)],

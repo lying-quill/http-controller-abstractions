@@ -1,13 +1,21 @@
 /** biome-ignore-all lint/complexity/noBannedTypes: ><> */
-import type { HttpStatus, MaybePromise, ResponseMap, ValuesOf } from "./common";
+/** biome-ignore-all lint/suspicious/noExplicitAny: ><> */
+
+import type { HttpStatus, StatusMap, ValuesOf } from "./common";
+import type { Middleware } from "./middleware";
 import type { Status } from "./status";
 
-/** an abstract controller definition focused on ??? */
-export type Controller<TInput, TMap extends ResponseMap, TCtx, TBindings> = (
-	input: Readonly<TInput>,
-	context: Readonly<TCtx>,
-	bindings: TBindings,
-) => MaybePromise<
+export type Controller<
+	TIn,
+	TMap extends StatusMap,
+	TCtx extends {} = {},
+	TBindings extends {} = {},
+> = Middleware<
+	TIn,
+	TCtx,
+	TBindings,
+	// controller should not modify the context
+	TCtx,
 	ValuesOf<{
 		[S in keyof TMap]: S extends HttpStatus ? Status<S, TMap[S]> : never;
 	}>

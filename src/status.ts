@@ -1,4 +1,4 @@
-import type { HttpStatus, ResponseMap } from "./common";
+import type { HttpStatus, StatusMap } from "./common";
 
 export interface StatusOptions {
 	headers?: Record<string, string>;
@@ -80,7 +80,7 @@ export interface StatusOptions {
 }
 
 export class Status<
-	TStatus extends HttpStatus,
+	TStatus extends HttpStatus = HttpStatus,
 	TBody = unknown,
 	TOptions extends StatusOptions = StatusOptions,
 > {
@@ -91,7 +91,7 @@ export class Status<
 	) {}
 }
 
-export function bind<const TMap extends ResponseMap>() {
+export function bind<const TMap extends StatusMap>() {
 	return {
 		status,
 	} as {
@@ -106,7 +106,7 @@ export function bind<const TMap extends ResponseMap>() {
 }
 
 export function status<
-	const TMap extends ResponseMap,
+	const TMap extends StatusMap,
 	const TStatus extends keyof TMap & HttpStatus,
 >(
 	status: TStatus,

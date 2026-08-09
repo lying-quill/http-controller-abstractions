@@ -1,20 +1,34 @@
+/** biome-ignore-all lint/complexity/noBannedTypes: ><> */
+
 import type { StandardSchemaV1 } from "@standard-schema/spec";
-import { type Middleware, Status } from "http-controller-abstractions";
+import {
+	createTransformRecord,
+	type Middleware,
+	Status,
+} from "http-controller-abstractions";
 import type Koa from "koa";
 
 // TODO: this should become part of the library?
 
-export function createBodyMiddleware<TIn, TOut, TBindings, TCtxIn>(
-	schema: StandardSchemaV1<TIn, TOut>,
-): Middleware<
-	Koa.Context,
-	TBindings,
-	TCtxIn,
-	/* input context is not modified */ TCtxIn,
+export class ValidationError extends Error {
+	public readonly name: string = "ValidationError";
+
+	constructor(issues: string[], schema: StandardSchemaV1) {
+		super();
+		this.message = issues.join("; ");
+		this.cause = schema;
+	}
+}
+
+export function createBodyMiddleware<
+	TIn,
 	TOut,
-	Status<422, { error: "ValidationError" }>
-> {
-	return async (input, context) => {
+	TBindings extends {},
+	TCtxIn extends {},
+>(
+	schema: StandardSchemaV1<TIn, TOut>,
+): Middleware<Koa.Context, TCtxIn, TBindings, {}, TOut> {
+	return async (input) => {
 		const validated = await schema["~standard"].validate(
 			["POST", "PUT", "PATCH"].includes(input.method)
 				? (input.request.body ?? {})
@@ -22,15 +36,12 @@ export function createBodyMiddleware<TIn, TOut, TBindings, TCtxIn>(
 		);
 
 		if ("issues" in validated && validated.issues) {
-			return {
-				context,
-				error: new Status(422, { error: "ValidationError" }, {}),
-			};
+			throw new ValidationError(
+				validated.issues.map((i) => i.message),
+				schema,
+			);
 		}
 
-		return {
-			context,
-			input: validated.value,
-		};
+		return createTransformRecord(validated.value, {});
 	};
 }
