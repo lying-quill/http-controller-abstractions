@@ -1,11 +1,14 @@
 import Router from "@koa/router";
-import { Compose } from "http-controller-abstractions";
+import { Compose, Status } from "http-controller-abstractions";
 import type Koa from "koa";
 import type { ServiceBindings } from "~/bindings";
 import listUsers, {
 	inputSchema as listUsersInputSchema,
 } from "~/controllers/list-users";
-import { createBodyMiddleware } from "~/lib/create-body-middleware";
+import {
+	createBodyMiddleware,
+	ValidationError,
+} from "~/lib/create-body-middleware";
 import { fromComposed } from "~/lib/from-composed";
 import { loadServices } from "~/lib/load-services";
 import { dummyMiddleware } from "~/middlewares/dummy";
@@ -25,8 +28,16 @@ router.get(
 			.with(listUsers)
 			.with((input) => {
 				// this middleware can transform the controller's response.
-				console.debug(input);
+				console.debug("controller output=", input);
 				return input;
+			})
+			.catch((e) => {
+				console.debug("error=", e);
+
+				if (e instanceof ValidationError)
+					return new Status(422, { error: "Validation Error" }, {});
+
+				return new Status(500, String(e), {});
 			})
 			.end(),
 		// allows lazy-loading the service bindings.
