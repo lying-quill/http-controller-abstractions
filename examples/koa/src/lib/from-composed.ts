@@ -1,4 +1,3 @@
-/** biome-ignore-all lint/suspicious/noExplicitAny: ><> */
 import type { Composed, Status } from "http-controller-abstractions";
 import type Koa from "koa";
 
