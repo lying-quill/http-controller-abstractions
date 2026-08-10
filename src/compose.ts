@@ -1,6 +1,7 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: ><> */
 /** biome-ignore-all lint/complexity/noBannedTypes: ><> */
 
+import type { MaybePromise } from "./common";
 import { isTransformRecord, type Middleware } from "./middleware";
 
 export type Composed<TIn, TOut, TBindings = {}> = (
@@ -8,7 +9,9 @@ export type Composed<TIn, TOut, TBindings = {}> = (
 	bindings: TBindings,
 ) => Promise<TOut>;
 
-export type ErrorHandler<TFallback> = (e: any) => undefined | TFallback;
+export type ErrorHandler<TFallback> = (
+	e: any,
+) => undefined | MaybePromise<TFallback>;
 
 export class Compose<
 	TNextIn,
@@ -69,7 +72,7 @@ export class Compose<
 				} catch (e) {
 					if (this.errorHandler)
 						// ><>
-						return this.errorHandler(e);
+						return await this.errorHandler(e);
 
 					throw e;
 				}

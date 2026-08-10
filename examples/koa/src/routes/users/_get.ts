@@ -31,8 +31,10 @@ router.get(
 				console.debug("controller output=", input);
 				return input;
 			})
-			.catch((e) => {
+			.catch(async (e) => {
 				console.debug("error=", e);
+
+				await new Promise((r) => setTimeout(r, 1000));
 
 				if (e instanceof ValidationError)
 					return new Status(422, { error: "Validation Error" }, {});
