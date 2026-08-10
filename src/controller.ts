@@ -1,5 +1,4 @@
 /** biome-ignore-all lint/complexity/noBannedTypes: ><> */
-/** biome-ignore-all lint/suspicious/noExplicitAny: ><> */
 
 import type { HttpStatus, StatusMap, ValuesOf } from "./common";
 import type { Middleware } from "./middleware";
