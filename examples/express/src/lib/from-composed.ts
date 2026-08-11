@@ -9,15 +9,6 @@ export function fromComposed<T, U extends Status>(
 		const binds = await bindings?.();
 		const result = await composed(req, binds);
 
-		// http status
-		res.status(result.status);
-
-		if (result.options.redirect) {
-			res.redirect(result.options.redirect);
-		} else {
-			res.send(result.body);
-		}
-
 		if (result.options.cookies) {
 			for (const cookieName in result.options.cookies) {
 				// biome-ignore lint/style/noNonNullAssertion: ><>
@@ -29,5 +20,16 @@ export function fromComposed<T, U extends Status>(
 		if (result.options.headers) {
 			res.header(result.options.headers);
 		}
+
+		// http status
+		res.status(result.status);
+
+		if (result.options.redirect) {
+			res.redirect(result.options.redirect);
+		} else {
+			res.send(result.body);
+		}
+
+		res.end();
 	};
 }
