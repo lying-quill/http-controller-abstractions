@@ -9,13 +9,13 @@
 		"dist"
 	],
 	"scripts": {
+		"prepare": "husky",
 		"lint": "biome lint .",
 		"format": "biome format . --write",
 		"build": "tsc -p tsconfig.json",
 		"build:watch": "tsc -p tsconfig.json --watch",
 		"build:clean": "rm -rf dist",
-		"commit:lint": "commitlint --edit",
-		"commit:prepare": "husky"
+		"commit:lint": "commitlint --edit"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.5.7",
