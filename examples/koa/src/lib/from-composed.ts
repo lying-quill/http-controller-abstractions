@@ -1,7 +1,6 @@
 import type { Composed, Status } from "http-controller-abstractions";
 import type Koa from "koa";
 
-/** provides a koa middleware from the provided composed handler */
 export function fromComposed<T, U extends Status>(
 	composed: Composed<Koa.Context, U, T>,
 	bindings: () => T | Promise<T>,

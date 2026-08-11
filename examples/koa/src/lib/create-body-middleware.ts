@@ -1,5 +1,3 @@
-/** biome-ignore-all lint/complexity/noBannedTypes: ><> */
-
 import type { StandardSchemaV1 } from "@standard-schema/spec";
 import {
 	createTransformRecord,

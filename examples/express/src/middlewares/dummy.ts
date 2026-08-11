@@ -7,7 +7,6 @@ import type { DummyContext, ServiceBindings } from "~/bindings";
 
 export const dummyMiddleware: Middleware<
 	Express.Request,
-	// biome-ignore lint/suspicious/noExplicitAny: ><>
 	any,
 	ServiceBindings,
 	DummyContext

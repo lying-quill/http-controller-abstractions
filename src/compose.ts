@@ -1,6 +1,3 @@
-/** biome-ignore-all lint/complexity/noBannedTypes: ><> */
-/** biome-ignore-all lint/suspicious/noExplicitAny: ><> */
-
 import type { MaybePromise } from "./common";
 import { isTransformRecord, type Middleware } from "./middleware";
 

@@ -7,7 +7,6 @@ import type { DummyContext, ServiceBindings } from "~/bindings";
 
 export const dummyMiddleware: Middleware<
 	Koa.Context,
-	// biome-ignore lint/suspicious/noExplicitAny: ><>
 	any,
 	ServiceBindings,
 	DummyContext

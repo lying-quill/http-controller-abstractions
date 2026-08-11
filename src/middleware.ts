@@ -1,5 +1,3 @@
-/** biome-ignore-all lint/complexity/noBannedTypes: ><> */
-
 import type { MaybePromise } from "./common";
 
 export type TransformRecord<TOut, TCtx extends {}> = {

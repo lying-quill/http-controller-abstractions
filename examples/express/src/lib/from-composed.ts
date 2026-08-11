@@ -1,9 +1,6 @@
-/** biome-ignore-all lint/suspicious/noExplicitAny: ><> */
-
 import type * as Express from "express";
 import type { Composed, Status } from "http-controller-abstractions";
 
-/** provides a koa middleware from the provided composed handler */
 export function fromComposed<T, U extends Status>(
 	composed: Composed<Express.Request, U, T>,
 	bindings: () => T | Promise<T>,
