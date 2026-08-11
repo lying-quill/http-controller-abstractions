@@ -1,7 +1,7 @@
 {
 	"name": "http-controller-abstractions",
 	"version": "0.1.0",
-	"description": "A small TypeScript library of typed abstractions for HTTP controllers, middleware composition, and status helpers.",
+	"description": "Tiny TypeScript library for testable, clutter-free, framework-agnostic controllers with strong type-safety",
 	"type": "module",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
