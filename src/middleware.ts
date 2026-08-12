@@ -1,4 +1,4 @@
-import type { MaybePromise } from "./common";
+import type { BaseMiddleware } from "./common";
 
 export type TransformRecord<TOut, TCtx extends {}> = {
 	readonly [transformKey]: true;
@@ -12,11 +12,7 @@ export type Middleware<
 	TBindings extends {} = {},
 	TCtxOut extends {} = TCtx,
 	TOut = TIn,
-> = (
-	input: Readonly<TIn>,
-	context: Readonly<TCtx>,
-	bindings: Readonly<TBindings>,
-) => MaybePromise<TOut | TransformRecord<TOut, TCtxOut>>;
+> = BaseMiddleware<TIn, TCtx, TBindings, TOut | TransformRecord<TOut, TCtxOut>>;
 
 const transformKey: unique symbol = Symbol("transformRecordSym");
 

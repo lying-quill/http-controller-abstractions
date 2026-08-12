@@ -1,5 +1,4 @@
-import type { HttpStatus, StatusMap, ValuesOf } from "./common";
-import type { Middleware } from "./middleware";
+import type { BaseMiddleware, HttpStatus, StatusMap, ValuesOf } from "./common";
 import type { Status } from "./status";
 
 export type Controller<
@@ -7,12 +6,10 @@ export type Controller<
 	TMap extends StatusMap,
 	TCtx extends {} = {},
 	TBindings extends {} = {},
-> = Middleware<
+> = BaseMiddleware<
 	TIn,
 	TCtx,
 	TBindings,
-	// controller should not modify the context
-	TCtx,
 	ValuesOf<{
 		[S in keyof TMap]: S extends HttpStatus ? Status<S, TMap[S]> : never;
 	}>
