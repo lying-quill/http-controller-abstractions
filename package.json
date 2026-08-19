@@ -1,6 +1,6 @@
 {
 	"name": "http-controller-abstractions",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"description": "Tiny TypeScript library for testable, clutter-free, framework-agnostic controllers with strong type-safety",
 	"type": "module",
 	"files": [
