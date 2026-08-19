@@ -1,12 +1,12 @@
-import type { Composed, Status } from "http-controller-abstractions";
+import type { Composed, Response } from "http-controller-abstractions";
 import type Koa from "koa";
 
-export function fromComposed<T, U extends Status>(
+export function fromComposed<T, U extends Response>(
 	composed: Composed<Koa.Context, U, T>,
 	bindings: () => T | Promise<T>,
 ) {
 	return async (ctx: Koa.Context, next: Koa.Next) => {
-		const binds = await bindings?.();
+		const binds = await bindings();
 		const result = await composed(ctx, binds);
 
 		// http status

@@ -1,6 +1,6 @@
 import type * as Express from "express";
 import express from "express";
-import { Compose, Status } from "http-controller-abstractions";
+import { Compose, Response } from "http-controller-abstractions";
 import type { ServiceBindings } from "~/bindings";
 import listUsers, {
 	inputSchema as listUsersInputSchema,
@@ -37,9 +37,9 @@ router.get(
 				await new Promise((r) => setTimeout(r, 1000));
 
 				if (e instanceof ValidationError)
-					return new Status(422, { error: "Validation Error" }, {});
+					return new Response(422, { error: "Validation Error" }, {});
 
-				return new Status(500, String(e), {});
+				return new Response(500, String(e), {});
 			})
 			.end(),
 		// allows lazy-loading the service bindings.

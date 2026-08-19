@@ -1,5 +1,5 @@
 import type { BaseMiddleware, HttpStatus, StatusMap, ValuesOf } from "./common";
-import type { Status } from "./status";
+import type { Response } from "./response";
 
 export type Controller<
 	TIn,
@@ -11,6 +11,6 @@ export type Controller<
 	TCtx,
 	TBindings,
 	ValuesOf<{
-		[S in keyof TMap]: S extends HttpStatus ? Status<S, TMap[S]> : never;
+		[S in keyof TMap]: S extends HttpStatus ? Response<S, TMap[S]> : never;
 	}>
 >;

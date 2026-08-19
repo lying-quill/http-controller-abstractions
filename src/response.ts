@@ -1,6 +1,6 @@
 import type { HttpStatus, StatusMap } from "./common";
 
-export interface StatusOptions {
+export interface ResponseOptions {
 	headers?: Record<string, string>;
 	/**
 	 * passing null as value deletes the cookie
@@ -79,10 +79,10 @@ export interface StatusOptions {
 	redirect?: string;
 }
 
-export class Status<
+export class Response<
 	TStatus extends HttpStatus = HttpStatus,
 	TBody = unknown,
-	TOptions extends StatusOptions = StatusOptions,
+	TOptions extends ResponseOptions = ResponseOptions,
 > {
 	constructor(
 		public readonly status: TStatus,
@@ -91,23 +91,23 @@ export class Status<
 	) {}
 }
 
-export function bindStatus<const TMap extends StatusMap>() {
-	return status as <TStatus extends keyof TMap>(
+export function bindResponse<const TMap extends StatusMap>() {
+	return response as <TStatus extends keyof TMap>(
 		status: TStatus,
 		body: TMap[TStatus],
-		options?: StatusOptions,
+		options?: ResponseOptions,
 	) => TStatus extends HttpStatus // 'keyof TMap' also includes 'symbol | string'
-		? Status<TStatus, TMap[TStatus]>
+		? Response<TStatus, TMap[TStatus]>
 		: never;
 }
 
-export function status<
+export function response<
 	const TMap extends StatusMap,
 	const TStatus extends keyof TMap & HttpStatus,
 >(
 	status: TStatus,
 	body: TMap[TStatus],
-	options?: StatusOptions,
-): Status<TStatus, TMap[TStatus]> {
-	return new Status(status, body, options ?? {});
+	options?: ResponseOptions,
+): Response<TStatus, TMap[TStatus]> {
+	return new Response(status, body, options ?? {});
 }

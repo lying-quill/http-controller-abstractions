@@ -1,4 +1,4 @@
-import { bindStatus, type Controller } from "http-controller-abstractions";
+import { bindResponse, type Controller } from "http-controller-abstractions";
 import * as v from "valibot";
 import type { AuthContext, ServiceBindings } from "~/bindings";
 
@@ -7,7 +7,7 @@ type StatusMap = {
 	204: undefined;
 };
 
-const status = bindStatus<StatusMap>();
+const response = bindResponse<StatusMap>();
 
 const inputSchema = v.object({
 	page: v.optional(
@@ -33,10 +33,10 @@ const controller: Controller<
 	console.log(input, ctx, svc);
 
 	if (Math.random() > 0.5) {
-		return status(204, undefined);
+		return response(204, undefined);
 	}
 
-	return status(200, {
+	return response(200, {
 		users: [String(ctx.user)],
 	});
 };

@@ -1,12 +1,12 @@
 import type * as Express from "express";
-import type { Composed, Status } from "http-controller-abstractions";
+import type { Composed, Response } from "http-controller-abstractions";
 
-export function fromComposed<T, U extends Status>(
+export function fromComposed<T, U extends Response>(
 	composed: Composed<Express.Request, U, T>,
 	bindings: () => T | Promise<T>,
 ) {
 	return async (req: Express.Request, res: Express.Response) => {
-		const binds = await bindings?.();
+		const binds = await bindings();
 		const result = await composed(req, binds);
 
 		if (result.options.cookies) {
