@@ -72,12 +72,12 @@ const handler = Compose.new<RequestInput, ServiceBindings>()
 	.end();
 ```
 
-### Status
-The `Status` class represents an HTTP response with status code, body, and
-optional headers/cookies/redirects:
+### Response
+The `Response` class represents an abstract HTTP response with status code,
+body, and optional headers/cookies/redirect:
 
 ```typescript
-new Status(200, { message: "OK" }, {
+new Response(200, { message: "OK" }, {
 	headers: {
 		"X-Custom": "value",
 	},
@@ -88,15 +88,16 @@ new Status(200, { message: "OK" }, {
 ```
 
 ## Installation
+This project is not yet published on NPM registry, so to install it, you gotta:
 ```bash
-npm install http-controller-abstractions
+npm install https://github.com/lying-quill/http-controller-abstractions
 ```
 
 ## Usage Examples
 ```typescript
 import {
 	createTransformRecord,
-	bindStatus,
+	bindResponse,
 	type Controller,
 	type Middleware,
 } from "http-controller-abstractions";
@@ -109,7 +110,7 @@ type StatusMap = {
 	200: { users: string[] };
 };
 
-const status = bindStatus<StatusMap>();
+const response = bindResponse<StatusMap>();
 
 const controller: Controller<
 	{},
@@ -117,7 +118,7 @@ const controller: Controller<
 	AuthContext,
 	// pick the services you actually use here so testing is easier
 	Pick<ServiceBindings, "db">
-> = (input, ctx, svc) => status(200, { users: [String(ctx.user)] });
+> = (input, ctx, svc) => response(200, { users: [String(ctx.user)] });
 
 const dummyMiddleware: Middleware<
 	Koa.Context,
@@ -160,20 +161,20 @@ caught. If called multiple times, the latest handler replaces previous ones.
 Finalizes the composition and returns a
 `Composed<TInitialInput, TCurrentOut | TErrorRet, TBindings>` function.
 
-### Status
+### Response
 ```typescript
-class Status<TStatus, TBody, TOptions> {
+class Response<TStatus, TBody, TOptions> {
 	constructor(
 		public readonly status: TStatus,
 		public readonly body: TBody,
-		public readonly options: StatusOptions,
+		public readonly options: ResponseOptions,
 	);
 }
 ```
 
-#### StatusOptions
+#### ResponseOptions
 ```typescript
-interface StatusOptions {
+interface ResponseOptions {
 	headers?: Record<string, string>;
 	cookies?: Record<string, CookieOptions | null>;
 	redirect?: string;
