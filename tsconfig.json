@@ -1,19 +1,14 @@
 {
 	"compilerOptions": {
-		"rootDir": ".",
-		"outDir": "dist",
-		"emitDeclarationOnly": false,
-		"declaration": true,
-		// "sourceMap": true,
+		"noEmit": true,
 		"target": "esnext",
 		"lib": ["ESNext"],
 		"module": "esnext",
 		"moduleResolution": "bundler",
 		"strict": true,
 		"skipLibCheck": true,
-		"isolatedModules": true,
 		"forceConsistentCasingInFileNames": true,
 		"allowImportingTsExtensions": false
 	},
-	"include": ["src/**/*.ts"]
+	"include": ["src"]
 }
