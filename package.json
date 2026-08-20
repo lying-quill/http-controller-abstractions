@@ -1,7 +1,7 @@
 {
 	"name": "http-controller-abstractions",
 	"version": "1.0.0",
-	"description": "Tiny TypeScript library for testable, clutter-free, framework-agnostic controllers with strong type-safety",
+	"description": "An abstraction library for writing testable, clutter-free, framework-agnostic controllers with strong type-safety",
 	"type": "module",
 	"files": [
 		"dist"
