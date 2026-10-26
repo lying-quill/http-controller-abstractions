@@ -1,0 +1,31 @@
+{
+	"name": "http-controller-abstractions",
+	"version": "1.0.0",
+	"description": "An abstraction library for writing testable, clutter-free, framework-agnostic controllers with strong type-safety",
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"exports": {
+		".": {
+			"module-sync": "./dist/index.mjs",
+			"default": "./dist/index.cjs"
+		}
+	},
+	"scripts": {
+		"prepare": "husky",
+		"lint": "biome lint .",
+		"format": "biome format . --write",
+		"build": "tsdown",
+		"build:clean": "rm -rf dist",
+		"commit:lint": "commitlint --edit"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.5.9",
+		"@commitlint/cli": "^21.2.2",
+		"@commitlint/config-conventional": "^21.2.2",
+		"husky": "^9.1.7",
+		"tsdown": "^0.22.14",
+		"typescript": "^7.0.2"
+	}
+}
