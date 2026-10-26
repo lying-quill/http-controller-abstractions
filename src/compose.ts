@@ -6,8 +6,12 @@ export type Composed<TIn, TOut, TBindings = {}> = (
 	bindings: TBindings,
 ) => Promise<TOut>;
 
-export type ErrorHandler<TFallback> = (
-	e: any,
+export type ErrorHandler<TFallback, TBindings extends {}> = (
+	error: any,
+	input: any,
+	context: any,
+	bindings: TBindings,
+	middleware: Function,
 ) => undefined | MaybePromise<TFallback>;
 
 export class Compose<
@@ -20,7 +24,7 @@ export class Compose<
 > {
 	private constructor(
 		protected readonly middlewares: Middleware<any, TCtx, TBindings>[] = [],
-		protected readonly errorHandler?: ErrorHandler<any>,
+		protected readonly errorHandler?: ErrorHandler<any, TBindings>,
 	) {}
 
 	public static new<T, U extends {}>() {
@@ -44,7 +48,7 @@ export class Compose<
 	}
 
 	public catch<T>(
-		f: ErrorHandler<T>,
+		f: ErrorHandler<T, TBindings>,
 	): Compose<TNextIn, TBindings, TCtx, TInitialInput, TCurrentOut, T> {
 		return new Compose([...this.middlewares], f);
 	}
@@ -59,7 +63,7 @@ export class Compose<
 
 			for (const m of this.middlewares) {
 				try {
-					const next = await m(inp, ctx, bindings as any);
+					const next = await m(inp, ctx, bindings);
 					if (isTransformRecord(next)) {
 						inp = next.out;
 						ctx = { ...ctx, ...next.ctx };
@@ -68,8 +72,13 @@ export class Compose<
 					}
 				} catch (e) {
 					if (this.errorHandler)
-						// ><>
-						return await this.errorHandler(e);
+						return await this.errorHandler(
+							e,
+							inp,
+							ctx,
+							bindings,
+							m,
+						);
 
 					throw e;
 				}

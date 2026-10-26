@@ -31,8 +31,14 @@ router.get(
 				console.debug("controller output=", input);
 				return input;
 			})
-			.catch(async (e) => {
-				console.debug("error=", e);
+			.catch(async (e, inp, ctx, bindings, middleware) => {
+				console.debug(
+					(e as Error).message,
+					inp,
+					ctx,
+					bindings,
+					middleware,
+				);
 
 				await new Promise((r) => setTimeout(r, 1000));
 

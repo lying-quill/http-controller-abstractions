@@ -10,6 +10,10 @@ export const dummyMiddleware: Middleware<
 	any,
 	ServiceBindings,
 	DummyContext
-> = (i) =>
-	// ><>
-	createTransformRecord(i, { meow: true });
+> = (i) => {
+	if (Math.random() < 0.5)
+		// ><>
+		throw new Error("This is an example error");
+
+	return createTransformRecord(i, { meow: true });
+};
